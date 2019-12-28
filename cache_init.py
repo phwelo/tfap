@@ -4,9 +4,10 @@ import requests
 import zipfile
 import os
 import re
+import sys
 
 aws_master_zip = 'https://github.com/terraform-providers/terraform-provider-aws/archive/master.zip'
-local_cache_path = '/tmp'
+local_cache_path = sys.argv[1]
 
 def download_file(url, path):
     '''download a filen chunked out for large capability'''
@@ -30,19 +31,26 @@ def fix_hcl_blocks(file_path):
     contents = md.read()
     contents = contents.replace('```hcl', '```')
     md.close()
-    # why the heck doesn't r+ work?
+    # why the heck doesn't r+ work above?
     md = open(file_path, 'w')
     md.write(contents)
     md.close()
     
-
 def prep_files(directory):
     '''walk the directory and run a function on each file'''
     for root, _, files in os.walk(directory):
         for file in files:
             fix_hcl_blocks(os.path.join(root, file))
 
-zip_path = local_cache_path + '/awsprovider.zip'
-download_file(aws_master_zip, zip_path)
-unzip_file(zip_path, local_cache_path)
-prep_files(local_cache_path + '/terraform-provider-aws-master')
+def cleanup_file(filename):
+    '''simply delete a file'''
+    os.remove(filename)
+
+def main():
+    zip_path = local_cache_path + '/awsprovider.zip'
+    download_file(aws_master_zip, zip_path)
+    unzip_file(zip_path, local_cache_path)
+    prep_files(local_cache_path + '/terraform-provider-aws-master')
+    cleanup_file(zip_path)
+
+main()
