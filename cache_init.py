@@ -25,6 +25,18 @@ def unzip_file(zipfile_path, destination):
             if file.endswith('.html.markdown'):
                 files.extract(file, destination)
 
+def master_sha(repo):
+    '''retrieve and return the sha of current master'''
+
+def store_sha(tmpfile, sha):
+    '''basically just string in file out'''
+
+def compare_sha(string1, string2):
+    '''compare the strings and gimme a bool'''
+
+def old_sha(tmpfile):
+    '''read in the previous sha version if one is stored'''
+
 def fix_hcl_blocks(file_path):
     '''remove the information table as well as fix hcl code blocks'''
     md = open(file_path, 'r')
